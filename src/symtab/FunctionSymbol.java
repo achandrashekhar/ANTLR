@@ -3,27 +3,28 @@ package symtab;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasicScope implements Scope {
+public class FunctionSymbol extends Symbol implements Scope {
     protected Scope enclosingScope;
-    public Map<String,Symbol> symbols = new HashMap<>();
+    protected Map<String,VariableSymbol> args = new HashMap<>();
 
-    public BasicScope(Scope enclosingScope) {
+    public FunctionSymbol(String name, Scope enclosingScope) {
+        super(name);
         this.enclosingScope = enclosingScope;
     }
 
     @Override
     public String getScopeName() {
-        return "<unknown>";
+        return name;
     }
 
     @Override
     public void define(Symbol s) {
-        symbols.put(s.name, s);
+        args.put(s.name, (VariableSymbol)s);
     }
 
     @Override
     public Symbol resolve(String name) {
-        Symbol s = symbols.get(name);
+        Symbol s = args.get(name);
         if ( s!=null ) return s;
         if ( getEnclosingScope()!=null ) {
             return getEnclosingScope().resolve(name);
